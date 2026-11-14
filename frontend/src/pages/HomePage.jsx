@@ -27,8 +27,8 @@ export default function HomePage() {
         </p>
         {!user && (
           <div className="hero-actions">
-            <Link to="/register" className="btn btn-primary">Create an account</Link>
-            <Link to="/login" className="btn btn-light">Log in</Link>
+            <Link to="/deals" className="btn btn-primary">Browse live deals</Link>
+            <Link to="/register" className="btn btn-light">Create an account</Link>
           </div>
         )}
       </section>

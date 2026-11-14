@@ -99,7 +99,11 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Added later: spring-boot-starter-websocket (live price updates) -->
+        <!-- WebSockets + STOMP: pushes live price changes to every open browser -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

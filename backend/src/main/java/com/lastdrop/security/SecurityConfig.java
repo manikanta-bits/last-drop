@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * The security rules for the whole backend.
  *
- *  - Public:   /api/health, /api/auth/register, /api/auth/login
+ *  - Public:   health, register, login, browsing deals (GET), the /ws live-update socket
  *  - Everything else needs a valid login token.
  *  - Role checks (e.g. "admins only") are written on each controller method
  *    with @PreAuthorize, which @EnableMethodSecurity switches on.
@@ -59,7 +59,10 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/health", "/api/auth/register", "/api/auth/login").permitAll()
+                .requestMatchers("/api/health", "/api/auth/register", "/api/auth/login", "/ws/**").permitAll()
+                // Anyone can browse deals; reserving and everything else needs a login
+                .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/*", "/api/products/*/history",
+                                 "/api/auctions/**", "/api/businesses/nearby").permitAll()
                 .anyRequest().authenticated())
             // 401 = not logged in, 403 = logged in but this role is not allowed
             .exceptionHandling(e -> e

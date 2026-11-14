@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { errorMessage, fieldErrors } from '../api/client.js';
-import { useAuth } from '../auth/useAuth.js';
+import { HOME_BY_ROLE, useAuth } from '../auth/useAuth.js';
 import FormField from '../components/FormField.jsx';
 
 // One-click demo logins for judges (accounts come from database/03-sample-data.sql)
@@ -31,8 +31,8 @@ export default function LoginPage() {
     setErrors({});
     setSubmitting(true);
     try {
-      await login(email, password);
-      navigate(location.state?.from || '/account', { replace: true });
+      const user = await login(email, password);
+      navigate(location.state?.from || HOME_BY_ROLE[user.role], { replace: true });
     } catch (err) {
       setError(errorMessage(err));
       setErrors(fieldErrors(err));

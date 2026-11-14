@@ -21,6 +21,14 @@ export default defineConfig({
           proxy.on('proxyReq', (proxyReq) => proxyReq.removeHeader('origin'));
         },
       },
+      // Live price updates (WebSocket) go through the same address
+      '/ws': {
+        target: 'ws://localhost:8080',
+        ws: true,
+        configure: (proxy) => {
+          proxy.on('proxyReqWs', (proxyReq) => proxyReq.removeHeader('origin'));
+        },
+      },
     },
   },
 });

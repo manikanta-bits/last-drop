@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { errorMessage, fieldErrors } from '../api/client.js';
-import { useAuth } from '../auth/useAuth.js';
+import { HOME_BY_ROLE, useAuth } from '../auth/useAuth.js';
 import FormField from '../components/FormField.jsx';
 
 const ACCOUNT_TYPES = [
@@ -27,8 +27,8 @@ export default function RegisterPage() {
     setErrors({});
     setSubmitting(true);
     try {
-      await register(form);
-      navigate('/account', { replace: true });
+      const user = await register(form);
+      navigate(user.role === 'BUSINESS' ? '/business/profile' : HOME_BY_ROLE[user.role], { replace: true });
     } catch (err) {
       setError(errorMessage(err));
       setErrors(fieldErrors(err));

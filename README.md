@@ -46,6 +46,17 @@ Frontend (terminal 2):
 
 Open http://localhost:5173. The page shows "Connected" when both parts are running.
 
+## What it does
+
+- **Buyers / NGOs:** browse nearby deals (list or map, 2/5/10/20 km), watch prices fall live, reserve, cancel, see savings.
+- **Businesses:** create a shop (admin approval), list products as Dutch auctions, pause/resume/cancel, mark pickups collected.
+- **Admin:** approve shops, manage users, remove listings, monitor auctions, see impact estimates, switch **demo mode** (prices drop every 10 s).
+- Prices are calculated only by the server (scheduler every 2 s) and pushed to every browser over WebSocket.
+
+## Deploy
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Test the backend
 
     cd backend

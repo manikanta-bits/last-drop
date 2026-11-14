@@ -31,9 +31,20 @@ class AuthControllerTest {
     @Autowired private MockMvc mockMvc;
     @Autowired private UserRepository userRepository;
     @Autowired private ObjectMapper objectMapper;
+    @Autowired private com.lastdrop.repository.NotificationRepository notifications;
+    @Autowired private com.lastdrop.repository.ReservationRepository reservations;
+    @Autowired private com.lastdrop.repository.PriceHistoryRepository history;
+    @Autowired private com.lastdrop.repository.ProductRepository products;
+    @Autowired private com.lastdrop.repository.BusinessRepository businesses;
 
     @BeforeEach
     void cleanDatabase() {
+        // children first, so foreign keys are never broken
+        notifications.deleteAll();
+        reservations.deleteAll();
+        history.deleteAll();
+        products.deleteAll();
+        businesses.deleteAll();
         userRepository.deleteAll();
     }
 
