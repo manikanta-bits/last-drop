@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: lastdrop-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: lastdrop
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/02-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/03-sample-data.sql:/docker-entrypoint-initdb.d/02-sample-data.sql:ro
+    networks:
+      - lastdrop-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lastdrop-backend
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: lastdrop
+      DB_USERNAME: root
+      DB_PASSWORD: rootpassword
+      JWT_SECRET: my-super-secret-jwt-key-minimum-32-chars-long!
+      CORS_ALLOWED_ORIGINS: http://localhost
+      DEMO_MODE: "false"
+    ports:
+      - "8080:8080"
+    networks:
+      - lastdrop-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: lastdrop-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - lastdrop-net
+
+volumes:
+  mysql_data:
+
+networks:
+  lastdrop-net:
+    driver: bridge
