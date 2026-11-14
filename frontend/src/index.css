@@ -1,25 +1,26 @@
 /* LASTDROP colour palette - used everywhere through var(--name) */
 :root {
-  --navy-900: #0b1220;
-  --navy: #101827;
-  --green: #16a36a;
-  --green-dark: #128a59;
-  --green-soft: #e7f6ef;
-  --bg: #f5f7fa;
+  --navy-900: #22342b;
+  --navy: #2b3d32;
+  --green: #63805c;
+  --green-dark: #456541;
+  --green-soft: #edf2e8;
+  --bg: #faf9f6;
   --surface: #ffffff;
-  --border: #e3e8ef;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --danger: #dc2626;
-  --danger-soft: #fdecec;
-  --warning: #d97706;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --border: #e8e8df;
+  --text: #343e36;
+  --muted: #778078;
+  --danger: #c94d3b;
+  --danger-soft: #fff0ed;
+  --warning: #be7c35;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: var(--text);
   background: var(--bg);
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; background: var(--bg); }
 a { color: var(--green-dark); }
 h1, h2, h3 { color: var(--navy); }
 

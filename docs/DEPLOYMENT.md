@@ -55,6 +55,17 @@ $mysql = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
 
 The frontend opens the WebSocket at `wss://<your-backend>.onrender.com/ws` automatically. HTTPS and WSS are provided by Render and Vercel.
 
+## Sign in with Google (optional)
+
+1. Go to console.cloud.google.com, create a project, then open **APIs & Services > OAuth consent screen**. Choose External and fill in the app name.
+2. Open **Credentials > Create credentials > OAuth client ID** and choose **Web application**.
+3. Under **Authorized JavaScript origins**, add `http://localhost:5173` and your Vercel link, e.g. `https://lastdrop.vercel.app`.
+   Google does not accept IP addresses such as `http://10.59.10.236:5173`, so on phones use the Vercel link.
+4. Copy the **Client ID** (it ends in `.apps.googleusercontent.com`).
+5. Set it on the backend as the environment variable `GOOGLE_CLIENT_ID`: in Render's settings, or locally with
+   `$env:GOOGLE_CLIENT_ID="...apps.googleusercontent.com"` before `.\mvnw.cmd spring-boot:run`.
+   The Google button then appears automatically on the login and sign-up pages. The frontend needs no change.
+
 ## 5. Check it on two phones
 
 1. Open the Vercel link on two phones and log in on one of them as `admin@lastdrop.demo` / `Demo@123`.

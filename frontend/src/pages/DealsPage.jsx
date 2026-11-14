@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import LiveBadge from '../components/LiveBadge.jsx';
 import LocationBar from '../components/LocationBar.jsx';
 import ProductCard from '../components/ProductCard.jsx';
@@ -10,10 +11,11 @@ import { CATEGORIES, CATEGORY_ICON, money, titleCase } from '../lib/format.js';
 // Nearby deals: filters + live-updating product cards.
 export default function DealsPage() {
   const toast = useToast();
+  const [searchParams] = useSearchParams();
   const { location, useMyLocation, locating, error: locError } = useUserLocation();
   const [radius, setRadius] = useState(10);
-  const [q, setQ] = useState('');
-  const [category, setCategory] = useState('');
+  const [q, setQ] = useState(() => searchParams.get('q') || '');
+  const [category, setCategory] = useState(() => searchParams.get('category') || '');
   const [maxPrice, setMaxPrice] = useState('');
   const [sort, setSort] = useState('');
 

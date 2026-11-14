@@ -59,7 +59,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/health", "/api/auth/register", "/api/auth/login", "/ws/**").permitAll()
+                .requestMatchers("/api/health", "/api/auth/register", "/api/auth/login", "/api/auth/google", "/api/auth/config", "/ws/**").permitAll()
                 // Anyone can browse deals; reserving and everything else needs a login
                 .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/*", "/api/products/*/history",
                                  "/api/auctions/**", "/api/businesses/nearby").permitAll()

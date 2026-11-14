@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useNow from '../hooks/useNow.js';
-import { CATEGORY_ICON, clock, money, titleCase } from '../lib/format.js';
+import { CATEGORY_ICON, CATEGORY_IMAGE, clock, money, productImage, titleCase } from '../lib/format.js';
 
 // Urgency colour by time left: under 1 hour = warning, under 15 minutes = danger
 export function urgency(msLeft) {
@@ -10,10 +11,21 @@ export function urgency(msLeft) {
 }
 
 export function ProductImage({ product, className = '' }) {
-  return product.imageUrl ? (
-    <img className={`product-img ${className}`} src={product.imageUrl} alt={product.name} loading="lazy" />
-  ) : (
-    <div className={`product-img placeholder ${className}`} aria-hidden="true">{CATEGORY_ICON[product.category] || '🍽️'}</div>
+  const [imageIndex, setImageIndex] = useState(0);
+  const images = [...new Set([product.imageUrl, productImage(product), CATEGORY_IMAGE[product.category]].filter(Boolean))];
+  const image = images[imageIndex];
+
+  if (!image) {
+    return <div className={`product-img placeholder ${className}`} aria-hidden="true">{CATEGORY_ICON[product.category] || '🍽️'}</div>;
+  }
+
+  return (
+    <div className={`product-photo ${className}`}>
+      <img src={image} alt={product.name} loading="lazy" onError={() => {
+        setImageIndex((current) => current + 1);
+      }} />
+      <span className="photo-category">{CATEGORY_ICON[product.category]} {titleCase(product.category)}</span>
+    </div>
   );
 }
 

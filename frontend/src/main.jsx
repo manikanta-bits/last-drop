@@ -7,6 +7,7 @@ import { ToastProvider } from './components/Toasts.jsx';
 import 'leaflet/dist/leaflet.css';
 import './index.css';
 import './app.css';
+import './theme.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

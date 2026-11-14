@@ -1,17 +1,10 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { errorMessage, fieldErrors } from '../api/client.js';
 import { HOME_BY_ROLE, useAuth } from '../auth/useAuth.js';
+import DemoAccounts from '../components/DemoAccounts.jsx';
 import FormField from '../components/FormField.jsx';
-
-// One-click demo logins for judges (accounts come from database/03-sample-data.sql)
-const DEMO_ACCOUNTS = [
-  { label: 'Buyer', email: 'buyer@lastdrop.demo' },
-  { label: 'NGO', email: 'ngo@lastdrop.demo' },
-  { label: 'Business', email: 'business1@lastdrop.demo' },
-  { label: 'Admin', email: 'admin@lastdrop.demo' },
-];
-const DEMO_PASSWORD = 'Demo@123';
+import GoogleButton from '../components/GoogleButton.jsx';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -25,31 +18,34 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const goHome = useCallback(
+    (user) => navigate(location.state?.from || HOME_BY_ROLE[user.role], { replace: true }),
+    [navigate, location.state],
+  );
+
+  const doLogin = async (loginEmail, loginPassword) => {
     setError('');
     setErrors({});
-    setSubmitting(true);
     try {
-      const user = await login(email, password);
-      navigate(location.state?.from || HOME_BY_ROLE[user.role], { replace: true });
+      goHome(await login(loginEmail, loginPassword));
     } catch (err) {
       setError(errorMessage(err));
       setErrors(fieldErrors(err));
-    } finally {
-      setSubmitting(false);
     }
   };
 
-  const fillDemo = (demoEmail) => {
-    setEmail(demoEmail);
-    setPassword(DEMO_PASSWORD);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setSubmitting(true);
+    await doLogin(email, password);
+    setSubmitting(false);
   };
 
   return (
-    <main className="page narrow">
-      <div className="card">
-        <h2>Log in</h2>
+    <main className="page auth-page">
+      <div className="card auth-card">
+        <h2>Welcome back 👋</h2>
+        <p className="muted">Log in to reserve deals before the price drops further.</p>
         {error && <p className="alert alert-error">{error}</p>}
 
         <form onSubmit={handleSubmit} noValidate>
@@ -64,21 +60,14 @@ export default function LoginPage() {
           </button>
         </form>
 
+        <GoogleButton text="signin_with" onSuccess={goHome} onError={setError} />
+
         <p className="muted center">
           New here? <Link to="/register">Create an account</Link>
         </p>
       </div>
 
-      <div className="card demo-box">
-        <p className="field-label">Demo accounts (password {DEMO_PASSWORD})</p>
-        <div className="demo-buttons">
-          {DEMO_ACCOUNTS.map((demo) => (
-            <button key={demo.email} type="button" className="btn btn-ghost" onClick={() => fillDemo(demo.email)}>
-              {demo.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <DemoAccounts onFill={(e, p) => { setEmail(e); setPassword(p); }} onLogin={doLogin} />
     </main>
   );
 }

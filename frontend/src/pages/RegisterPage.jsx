@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { errorMessage, fieldErrors } from '../api/client.js';
 import { HOME_BY_ROLE, useAuth } from '../auth/useAuth.js';
 import FormField from '../components/FormField.jsx';
+import GoogleButton from '../components/GoogleButton.jsx';
 
 const ACCOUNT_TYPES = [
   { value: 'BUYER', title: 'Individual', text: 'Find discounted food near you' },
@@ -19,6 +20,9 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
+  const afterSignup = (user) =>
+    navigate(user.role === 'BUSINESS' ? '/business/profile' : HOME_BY_ROLE[user.role], { replace: true });
+
   const update = (field) => (event) => setForm({ ...form, [field]: event.target.value });
 
   const handleSubmit = async (event) => {
@@ -27,8 +31,7 @@ export default function RegisterPage() {
     setErrors({});
     setSubmitting(true);
     try {
-      const user = await register(form);
-      navigate(user.role === 'BUSINESS' ? '/business/profile' : HOME_BY_ROLE[user.role], { replace: true });
+      afterSignup(await register(form));
     } catch (err) {
       setError(errorMessage(err));
       setErrors(fieldErrors(err));
@@ -39,8 +42,8 @@ export default function RegisterPage() {
 
   return (
     <main className="page narrow">
-      <div className="card">
-        <h2>Create your account</h2>
+      <div className="card auth-card">
+        <h2>Create your account ✨</h2>
         {error && <p className="alert alert-error">{error}</p>}
 
         <form onSubmit={handleSubmit} noValidate>
@@ -79,7 +82,11 @@ export default function RegisterPage() {
           </button>
         </form>
 
+        <GoogleButton role={form.role} text="signup_with" onSuccess={afterSignup} onError={setError} />
+        <p className="muted small center">Google sign-up uses the account type selected above.</p>
+
         <p className="muted center">
+          Just exploring? <Link to="/login">Use a demo account</Link> ·
           Already registered? <Link to="/login">Log in</Link>
         </p>
       </div>

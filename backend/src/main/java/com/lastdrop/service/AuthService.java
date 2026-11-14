@@ -1,6 +1,7 @@
 package com.lastdrop.service;
 
 import java.util.Locale;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lastdrop.dto.AuthResponse;
+import com.lastdrop.dto.GoogleLoginRequest;
 import com.lastdrop.dto.LoginRequest;
 import com.lastdrop.dto.RegisterRequest;
 import com.lastdrop.dto.UserResponse;
@@ -15,6 +17,8 @@ import com.lastdrop.entity.Role;
 import com.lastdrop.entity.User;
 import com.lastdrop.exception.ApiException;
 import com.lastdrop.repository.UserRepository;
+import com.lastdrop.security.GoogleTokenVerifier;
+import com.lastdrop.security.GoogleTokenVerifier.GoogleProfile;
 import com.lastdrop.security.JwtService;
 
 /**
@@ -29,11 +33,40 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final GoogleTokenVerifier googleVerifier;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
+                       GoogleTokenVerifier googleVerifier) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.googleVerifier = googleVerifier;
+    }
+
+    /**
+     * "Continue with Google": logs in an existing account with the same email,
+     * or creates a new one (BUYER, NGO or BUSINESS) the first time.
+     */
+    @Transactional
+    public AuthResponse googleLogin(GoogleLoginRequest request) {
+        GoogleProfile profile = googleVerifier.verify(request.credential());
+        String email = normalizeEmail(profile.email());
+
+        User user = userRepository.findByEmail(email).orElseGet(() -> {
+            Role role = request.role() == null ? Role.BUYER : request.role();
+            if (role == Role.ADMIN) {
+                throw new ApiException(HttpStatus.BAD_REQUEST, "Admin accounts cannot be created by registration");
+            }
+            // Google users sign in with Google, so they get a random password nobody knows
+            String randomPassword = UUID.randomUUID().toString();   // 36 chars (BCrypt allows up to 72 bytes)
+            String name = profile.name().length() > 100 ? profile.name().substring(0, 100) : profile.name();
+            return userRepository.save(new User(email, passwordEncoder.encode(randomPassword), name, null, role));
+        });
+
+        if (!user.isEnabled()) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "This account has been disabled. Contact the administrator.");
+        }
+        return new AuthResponse(jwtService.createToken(user), UserResponse.from(user));
     }
 
     @Transactional

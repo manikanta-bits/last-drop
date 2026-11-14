@@ -157,7 +157,8 @@ class MarketplaceFlowTest {
 
     @Test
     void demoModeDropsEveryTenSeconds() {
-        Instant now = Instant.now();
+        // whole milliseconds, so database rounding of tiny fractions can't shift the 10-second boundary
+        Instant now = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
         Product p = product(approvedShop(seller, 17.44, 78.39), "350", "100", "25", 60, Duration.ofHours(10), 5);
         p.setLastDropAt(now);
         products.save(p);

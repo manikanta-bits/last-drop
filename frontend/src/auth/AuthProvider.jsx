@@ -34,12 +34,21 @@ export function AuthProvider({ children }) {
     return saveSession(response.data);
   }, []);
 
+  // "Continue with Google": credential is the token Google gives the browser
+  const loginWithGoogle = useCallback(async (credential, role) => {
+    const response = await api.post('/api/auth/google', { credential, role });
+    return saveSession(response.data);
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     setUser(null);
   }, []);
 
-  const value = useMemo(() => ({ user, loading, login, register, logout }), [user, loading, login, register, logout]);
+  const value = useMemo(
+    () => ({ user, loading, login, register, loginWithGoogle, logout }),
+    [user, loading, login, register, loginWithGoogle, logout],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

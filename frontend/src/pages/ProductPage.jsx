@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import api, { errorMessage } from '../api/client.js';
 import { useAuth } from '../auth/useAuth.js';
 import LiveBadge from '../components/LiveBadge.jsx';
+import OrderJourney from '../components/OrderJourney.jsx';
 import { LivePrice, ProductImage, urgency } from '../components/ProductCard.jsx';
 import { useToast } from '../components/useToast.js';
 import { mergeProductUpdate } from '../hooks/useLiveProducts.js';
@@ -87,7 +88,7 @@ export default function ProductPage() {
     <main className="page">
       <Link to="/deals" className="muted small">← All deals</Link>
       <div className="product-page">
-        <ProductImage product={product} className="hero-img" />
+        <ProductImage key={product.id} product={product} className="hero-img" />
         <section className="card">
           <div className="page-head">
             <span className={`status status-${product.status.toLowerCase()}`}>{titleCase(product.status)}</span>
@@ -111,6 +112,7 @@ export default function ProductPage() {
               Collect from {reservation.businessName}, {reservation.businessAddress} before {dateTime(reservation.pickupBy)}.<br />
               Cash on pickup - this demo takes no online payment.{' '}
               <Link to="/reservations">My reservations</Link>
+              <OrderJourney reservationId={reservation.id} autoPlay />
             </div>
           ) : !live ? (
             <p className="alert alert-error">This deal is no longer available.</p>

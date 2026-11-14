@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api, { errorMessage } from '../api/client.js';
+import OrderJourney from '../components/OrderJourney.jsx';
 import Stat from '../components/Stat.jsx';
 import { useToast } from '../components/useToast.js';
 import { dateTime, money, titleCase } from '../lib/format.js';
@@ -53,6 +54,7 @@ export default function ReservationsPage() {
               {money(r.totalPrice)} <span className="muted">(saved {money(r.savings)})</span> · reserved {dateTime(r.createdAt)}
             </div>
             {r.status === 'RESERVED' && <div className="small warning-text">Collect before {dateTime(r.pickupBy)} · Cash on pickup</div>}
+            {r.status === 'RESERVED' && <OrderJourney reservationId={r.id} />}
           </div>
           <div className="row-actions">
             <span className={`status status-${r.status.toLowerCase()}`}>{titleCase(r.status)}</span>
