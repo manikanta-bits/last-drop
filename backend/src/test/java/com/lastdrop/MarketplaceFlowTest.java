@@ -302,6 +302,17 @@ class MarketplaceFlowTest {
         mvc.perform(as(buyer, get("/api/reservations/my"))).andExpect(jsonPath("$[0].status").value("CANCELLED"));
     }
 
+    @Test
+    void systemInfoIsAdminOnlyAndNeverShowsPassword() throws Exception {
+        String body = mvc.perform(as(admin, get("/api/admin/system")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.database.connected").value(true))
+                .andExpect(jsonPath("$.rows.users").value("4"))
+                .andReturn().getResponse().getContentAsString();
+        assertThat(body.toLowerCase()).doesNotContain("password");
+        mvc.perform(as(buyer, get("/api/admin/system"))).andExpect(status().isForbidden());
+    }
+
     // ---------- helpers ----------
 
     private MockHttpServletRequestBuilder as(User u, MockHttpServletRequestBuilder req) {

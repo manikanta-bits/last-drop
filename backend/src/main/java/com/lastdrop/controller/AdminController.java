@@ -1,6 +1,7 @@
 package com.lastdrop.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +19,7 @@ import com.lastdrop.service.BusinessService;
 import com.lastdrop.service.DashboardService;
 import com.lastdrop.service.DemoModeService;
 import com.lastdrop.service.ProductService;
+import com.lastdrop.service.SystemInfoService;
 import com.lastdrop.service.UserAdminService;
 import com.lastdrop.util.Pricing;
 
@@ -34,19 +36,27 @@ public class AdminController {
     private final BusinessService businesses;
     private final ProductService products;
     private final DemoModeService demoMode;
+    private final SystemInfoService systemInfo;
 
     public AdminController(DashboardService dashboard, UserAdminService users, BusinessService businesses,
-                           ProductService products, DemoModeService demoMode) {
+                           ProductService products, DemoModeService demoMode, SystemInfoService systemInfo) {
         this.dashboard = dashboard;
         this.users = users;
         this.businesses = businesses;
         this.products = products;
         this.demoMode = demoMode;
+        this.systemInfo = systemInfo;
     }
 
     @GetMapping("/dashboard")
     public AdminDashboard dashboard() {
         return dashboard.admin();
+    }
+
+    /** Which database server the backend is connected to (no password), plus row counts. */
+    @GetMapping("/system")
+    public Map<String, Object> system() {
+        return systemInfo.info();
     }
 
     @GetMapping("/users")

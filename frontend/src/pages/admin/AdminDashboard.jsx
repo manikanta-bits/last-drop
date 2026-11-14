@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api, { errorMessage } from '../../api/client.js';
 import Stat from '../../components/Stat.jsx';
+import SystemInfoPanel from '../../components/SystemInfoPanel.jsx';
 import { useToast } from '../../components/useToast.js';
 import { money } from '../../lib/format.js';
 
@@ -67,6 +68,8 @@ export default function AdminDashboard() {
         <Stat label="Estimated CO₂e avoided" value={`${d.impact.estimatedCo2Kg} kg`} />
       </div>
       <p className="muted small">{d.impact.assumptions}</p>
+
+      <SystemInfoPanel />
 
       <div className="admin-links">
         <Link className="card" to="/admin/businesses">🏪 Business approvals {d.pendingBusinesses > 0 && <span className="bell-count">{d.pendingBusinesses}</span>}</Link>

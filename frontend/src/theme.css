@@ -206,6 +206,11 @@ main.page { animation: fadeUp 0.5s ease both; }
 .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
 .modal-actions .btn { flex: 1; }
 
+/* ---------- admin system info ---------- */
+.system-info .details { grid-template-columns: max-content 1fr; }
+.system-info .contents { display: contents; }
+.system-info code { color: var(--violet); word-break: break-all; }
+
 /* ---------- server-not-reachable strip ---------- */
 .server-banner {
   background: linear-gradient(90deg, #fef3c7, #fde68a); color: #78350f; text-align: center;
