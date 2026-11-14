@@ -1,0 +1,16 @@
+# Secrets - never commit these
+.env
+*.env.local
+!.env.example
+
+# Downloaded / generated files
+node_modules/
+frontend/dist/
+backend/target/
+
+# Editor and OS files
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
