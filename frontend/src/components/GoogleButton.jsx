@@ -18,10 +18,10 @@ function loadGoogleScript() {
 
 /**
  * The official "Sign in with Google" button.
- * The backend tells us its Google client id (/api/auth/config). If none is set, a short note is shown instead.
+ * The backend tells us its Google client id (/api/auth/config). If none is set, nothing is shown (email + password login only).
  * role = account type used if this Google account is new (sign-up).
  */
-export default function GoogleButton({ role = 'BUYER', text = 'continue_with', onSuccess, onError }) {
+export default function GoogleButton({ role = 'BUYER', text = 'continue_with', hint, onSuccess, onError }) {
   const { loginWithGoogle } = useAuth();
   const box = useRef(null);
   // Latest props kept in refs, so Google is set up only once per page
@@ -60,14 +60,15 @@ export default function GoogleButton({ role = 'BUYER', text = 'continue_with', o
     return () => { cancelled = true; };
   }, [loginWithGoogle, text]);
 
+  // Google is optional: when the server has no GOOGLE_CLIENT_ID (or Google can't load),
+  // show nothing at all - visitors simply use email + password (JWT) login.
+  if (state === 'off' || state === 'failed') return null;
+
   return (
-    <div className="google-area">
+    <div className="google-area" style={state === 'loading' ? { display: 'none' } : undefined}>
       <div className="divider"><span>or</span></div>
       <div ref={box} className="google-button" />
-      {state === 'off' && (
-        <p className="muted small center">Google sign-in becomes available when the server has a GOOGLE_CLIENT_ID.</p>
-      )}
-      {state === 'failed' && <p className="muted small center">Google sign-in could not load. Check your internet connection.</p>}
+      {hint && <p className="muted small center">{hint}</p>}
     </div>
   );
 }

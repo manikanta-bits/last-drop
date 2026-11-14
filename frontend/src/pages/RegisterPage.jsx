@@ -82,8 +82,8 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <GoogleButton role={form.role} text="signup_with" onSuccess={afterSignup} onError={setError} />
-        <p className="muted small center">Google sign-up uses the account type selected above.</p>
+        <GoogleButton role={form.role} text="signup_with" hint="Google sign-up uses the account type selected above."
+                      onSuccess={afterSignup} onError={setError} />
 
         <p className="muted center">
           Just exploring? <Link to="/login">Use a demo account</Link> ·
