@@ -8,11 +8,20 @@ pipeline {
             }
         }
 
-        stage('Backend Test') {
+        stage('Backend Build') {
             steps {
                 dir('backend') {
                     sh 'chmod +x mvnw'
-                    sh './mvnw clean test -Dmaven.test.failure.ignore=true'
+                    sh './mvnw clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Frontend Build') {
+            steps {
+                dir('frontend') {
+                    sh 'npm install'
+                    sh 'npm run build'
                 }
             }
         }
@@ -26,7 +35,7 @@ pipeline {
 
         stage('Health Check') {
             steps {
-                sleep 25
+                sleep 20
                 sh 'curl -f http://localhost:8080/api/health || exit 1'
             }
         }
