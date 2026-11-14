@@ -21,8 +21,22 @@ api.interceptors.request.use((config) => {
 
 // After every response: if the backend says "401 Please log in" for a request
 // that carried a token, the token has expired - forget it and go to the login page.
+export const BACKEND_MISSING = 'The LASTDROP server is not connected. Please try again later.';
+
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Our API always answers with JSON. Getting an HTML page back means the address has no
+    // backend behind it (e.g. a static host without VITE_API_BASE_URL) - treat it as an error
+    // instead of handing a web page to code that expects data.
+    const type = String(response.headers?.['content-type'] || '');
+    if (type.includes('text/html')) {
+      const error = new Error(BACKEND_MISSING);
+      error.backendMissing = true;
+      error.config = response.config;
+      return Promise.reject(error);
+    }
+    return response;
+  },
   (error) => {
     const hadToken = Boolean(error.config?.headers?.Authorization);
     if (error.response?.status === 401 && hadToken) {
@@ -37,6 +51,7 @@ api.interceptors.response.use(
 
 // Turns any API error into a sentence we can show the user.
 export function errorMessage(error) {
+  if (error.backendMissing) return BACKEND_MISSING;
   if (error.response?.data?.message) return error.response.data.message;
   if (error.request && !error.response) return 'Cannot reach the server. Is the backend running?';
   return 'Something went wrong. Please try again.';

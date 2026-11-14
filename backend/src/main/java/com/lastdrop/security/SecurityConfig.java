@@ -47,7 +47,8 @@ public class SecurityConfig {
                           @Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
-        this.allowedOrigins = allowedOrigins;
+        // "https://site.vercel.app/" and "https://site.vercel.app" mean the same; browsers send no trailing slash
+        this.allowedOrigins = allowedOrigins.stream().map(String::trim).map(o -> o.replaceAll("/+$", "")).filter(o -> !o.isEmpty()).toList();
     }
 
     @Bean

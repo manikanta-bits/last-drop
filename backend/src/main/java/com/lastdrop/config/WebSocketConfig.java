@@ -28,7 +28,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final List<String> allowedOrigins;
 
     public WebSocketConfig(@Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
+        this.allowedOrigins = allowedOrigins.stream().map(String::trim).map(o -> o.replaceAll("/+$", "")).filter(o -> !o.isEmpty()).toList();
     }
 
     @Override

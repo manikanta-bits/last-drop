@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './auth/ProtectedRoute.jsx';
 import { HOME_BY_ROLE, useAuth } from './auth/useAuth.js';
 import Navbar from './components/Navbar.jsx';
+import ServerBanner from './components/ServerBanner.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import AccountPage from './pages/AccountPage.jsx';
 import AdminBusinessesPage from './pages/admin/AdminBusinessesPage.jsx';
@@ -32,6 +33,7 @@ export default function App() {
   return (
     <>
       <Navbar />
+      <ServerBanner />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutPage />} />

@@ -36,7 +36,7 @@ export default function useLiveProducts(url, params, { onPriceDrop, onNewProduct
   const load = useCallback(async () => {
     try {
       const response = await api.get(url, { params: JSON.parse(paramsKey) });
-      setProducts(response.data);
+      setProducts(Array.isArray(response.data) ? response.data : []);
       setError('');
     } catch {
       setError('Could not load deals. Please try again.');
