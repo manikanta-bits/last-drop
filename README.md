@@ -15,14 +15,11 @@ The price drops automatically every hour (a "Dutch auction") until someone reser
 
 In PowerShell:
 
-    cd database
-    $mysql = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
-    & $mysql -u root -p -e "source 01-create-database.sql"
-    & $mysql -u lastdrop -plastdrop_dev --default-character-set=utf8mb4 -e "source 02-schema.sql"
-    & $mysql -u lastdrop -plastdrop_dev --default-character-set=utf8mb4 -e "source 03-sample-data.sql"
+    powershell -ExecutionPolicy Bypass -File database\setup-database.ps1
 
-The first command asks for your MySQL root password.
-To reset the demo later, run only the last two commands again.
+It asks for your MySQL root password once, then prints
+`SUCCESS: database 'lastdrop' is ready with 24 products.`
+Run it again any time to reset the demo data.
 
 ## Demo accounts (password for all: Demo@123)
 

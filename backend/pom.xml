@@ -26,6 +26,7 @@
     <properties>
         <!-- Compile for Java 17 (the LTS the project targets). Newer JDKs such as 21 or 24 can build it too. -->
         <java.version>17</java.version>
+        <jjwt.version>0.13.0</jjwt.version>
     </properties>
 
     <dependencies>
@@ -41,20 +42,64 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- Database access: JPA/Hibernate turns Java classes into table rows and back -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- The driver that lets Java talk to MySQL -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Login, password hashing (BCrypt) and role checks -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- JWT: creates and checks the login "token" the browser sends with each request -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- Automated tests (JUnit 5, MockMvc, AssertJ) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-        <!--
-          More dependencies are added in later phases, when we actually use them:
-            Phase 3:  spring-boot-starter-data-jpa, mysql-connector-j
-            Phase 4:  spring-boot-starter-security, jjwt
-            Phase 9:  spring-boot-starter-websocket
-          Adding them now would make the app refuse to start without a database.
-        -->
+        <!-- In-memory database used ONLY by tests, so tests run without MySQL -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Added later: spring-boot-starter-websocket (live price updates) -->
     </dependencies>
 
     <build>
