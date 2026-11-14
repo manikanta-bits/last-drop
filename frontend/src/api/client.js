@@ -2,10 +2,12 @@ import axios from 'axios';
 
 export const TOKEN_KEY = 'lastdrop_token';
 
-// One shared Axios instance. Every API call in the app goes through this,
-// so the backend address is configured in exactly one place (.env file).
+// One shared Axios instance. Every API call in the app goes through this.
+// - Development: VITE_API_BASE_URL is empty, so calls go to /api/... on the same
+//   address and Vite forwards them to the backend (see vite.config.js).
+// - Production: VITE_API_BASE_URL is the live backend address, e.g. https://lastdrop-api.onrender.com
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '',
 });
 
 // Before every request: attach the login token if we have one.
