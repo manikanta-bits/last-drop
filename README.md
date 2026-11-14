@@ -53,6 +53,16 @@ Open http://localhost:5173. The page shows "Connected" when both parts are runni
 - **Admin:** approve shops, manage users, remove listings, monitor auctions, see impact estimates, switch **demo mode** (prices drop every 10 s).
 - Prices are calculated only by the server (scheduler every 2 s) and pushed to every browser over WebSocket.
 
+## Run everything with Docker (easiest)
+
+Needs only Docker Desktop. No Java, Node or MySQL installation is required.
+
+    docker compose up --build
+
+Open http://localhost:3000. The database, demo data, backend and frontend all start together.
+Use `docker compose down` to stop, or `docker compose down -v` to also reset the demo data.
+To change passwords, copy `.env.example` to `.env` and edit it.
+
 ## Deploy
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).

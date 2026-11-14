@@ -48,7 +48,7 @@ $mysql = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
 ## 4. Frontend - Vercel
 
 1. Sign up at vercel.com, choose **Add New > Project**, and import the repo.
-2. Set **Root Directory** to `frontend`. Vercel detects Vite automatically.
+2. Either leave **Root Directory** as the repository root (the root `vercel.json` builds `frontend/`), or set it to `frontend` (then `frontend/vercel.json` is used). Both work.
 3. Add the environment variable `VITE_API_BASE_URL` = `https://<your-backend>.onrender.com` (no slash at the end).
 4. Deploy. You get a link like `https://lastdrop.vercel.app`.
 5. Go back to Render and make sure `CORS_ALLOWED_ORIGINS` is exactly this Vercel link, then redeploy the backend.
